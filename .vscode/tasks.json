@@ -22,5 +22,11 @@
       "type": "shell",
       "command": "scripts/triad-health.sh"
     }
+    ,
+    {
+      "label": "List Slash Commands",
+      "type": "shell",
+      "command": "scripts/list-slash-commands.sh"
+    }
   ]
 }

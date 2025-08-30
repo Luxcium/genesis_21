@@ -30,10 +30,18 @@ else
 fi
 
 # Summarize files
-echo "\n[triad] Inventory"
-printf "- Instructions: %s\n" memory-bank/instructions/*.instructions.md 2>/dev/null | sed 's|^|- |'
-printf "- Chatmodes: %s\n" memory-bank/chatmodes/*.chatmode.md 2>/dev/null | sed 's|^|- |'
-printf "- Prompts: %s\n" memory-bank/prompts/*.prompt.md 2>/dev/null | sed 's|^|- |'
+echo
+echo "[triad] Inventory"
+shopt -s nullglob
+inst=(memory-bank/instructions/*.instructions.md)
+cm=(memory-bank/chatmodes/*.chatmode.md)
+pr=(memory-bank/prompts/*.prompt.md)
+echo "- Instructions:"
+for f in "${inst[@]:-}"; do echo "  - $f"; done
+echo "- Chatmodes:"
+for f in "${cm[@]:-}"; do echo "  - $f"; done
+echo "- Prompts:"
+for f in "${pr[@]:-}"; do echo "  - $f"; done
 
 # Check VS Code wiring
 echo "\n[triad] VS Code wiring"

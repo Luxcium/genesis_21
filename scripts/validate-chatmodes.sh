@@ -12,8 +12,9 @@ for f in memory-bank/chatmodes/*.chatmode.md; do
   if ! grep -qE '^---$' "$f"; then
     echo "[validate] $f: missing front-matter start"; errors=$((errors+1))
   fi
-  # Tools exact match check, whitespace-tolerant
-  if ! grep -Eq "^tools:\s*\['codebase',\s*'editFiles',\s*'fetch'\]\s*$" "$f"; then
+  # Tools exact match check (order preserved), tolerant to quotes/spaces
+  tools_line=$(grep -E '^tools:' "$f" | head -n1 | tr -d '[:space:]' | sed -E "s/[\"']//g")
+  if [[ "$tools_line" != "tools:[codebase,editFiles,fetch]" ]]; then
     echo "[validate] $f: tools must be ['codebase', 'editFiles', 'fetch']"; errors=$((errors+1))
   fi
   if ! grep -qE "model: GPT-5 \(Preview\)|model: GPT-5 mini \(Preview\)" "$f"; then
