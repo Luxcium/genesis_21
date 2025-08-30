@@ -17,7 +17,7 @@
   "chat.modeFilesLocations": {
     "memory-bank/chatmodes": true
   },
-
-  // Baseline note: Node.js 22+ expected in this workspace
-  "genesis.nodeBaseline": "22+"
+  "chat.agent.enabled": true,
+  "chat.agent.thinkingStyle": "expanded",
+  "chat.math.enabled": true
 }
