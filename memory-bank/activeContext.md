@@ -1,5 +1,5 @@
 # Active Context
 
 - Date: 2025-08-29
-- Focus: Apply Layer 2 bootstrap.
-- Next: Validate idempotence and proceed to Layer 3.
+- Focus: Layers 3A/3B/3C implemented; triad coherence validated.
+- Next: Expand prompts, add routing helpers, and integrate into workflows.

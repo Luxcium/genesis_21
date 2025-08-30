@@ -11,3 +11,8 @@ Next
 - Validate idempotence for Layer 2
  - Expand prompt library and add routing helpers
 
+Session Debrief (2025-08-29)
+- User-provided updates integrated for Layer 3 factory and examples.
+- Triad index and health scripts created; validators all pass.
+- Ready to scale by adding prompts and automation shortcuts.
+

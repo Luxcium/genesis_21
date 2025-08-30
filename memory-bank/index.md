@@ -12,3 +12,4 @@ This index centralizes the triad for fast navigation and coordination.
 
 ## Prompts (Layer 3C)
 - [Quick Edit](./prompts/quick-edit.prompt.md)
+- [Bootstrap Genesis](./prompts/bootstrap-genesis.prompt.md)
