@@ -1,6 +1,6 @@
 ---
 description: Idempotent bootstrap/repair for Genesis Layers 1–3 (3A/3B/3C) using local instructions and validators.
-mode: agent
+tools: ['codebase', 'fetch', 'getTerminalOutput', 'terminalSelection', 'terminalLastCommand', 'edit', 'runTasks', 'think', 'todos']
 ---
 
 ## Slash Command: /bootstrap-genesis - Initialize or Repair Layers 1–3
