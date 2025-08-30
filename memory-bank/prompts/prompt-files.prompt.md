@@ -1,166 +1,131 @@
 ---
-description: Learn how to create reusable prompt files for GitHub Copilot Chat in VS Code to standardize common development tasks and improve your coding workflow efficiency.
+description: Author and run *.prompt.md cards under memory-bank/prompts/ with our strict format and guardrails.
 ---
-# Use prompt files in VS Code
 
-Prompt files are Markdown files that define reusable prompts for common development tasks like generating code, performing code reviews, or scaffolding project components. They are standalone prompts that you can run directly in chat, enabling the creation of a library of standardized development workflows.
+<!-- memory-bank/prompts/prompt-files-guide.prompt.md -->
 
-They can include task-specific guidelines or reference custom instructions to ensure consistent execution. Unlike custom instructions that apply to all requests, prompt files are triggered on-demand for specific tasks.
+# Prompt Files Guide
 
-> [!NOTE]
-> Prompt files are currently experimental and may change in future releases.
+## Slash Command: /prompt-files-guide - Author and run *.prompt.md cards
 
-VS Code supports two types of scopes for prompt files:
+This command activates “Prompt Authoring Mode” for this run: you generate or refactor prompt cards
+that comply with our repository rules and produce ready-to-use `.prompt.md` files.
 
-* **Workspace prompt files**: Are only available within the workspace and are stored in the `.github/prompts` folder of the workspace.
-* **User prompt files**: Are available across multiple workspaces and are stored in the current [VS Code profile](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/configure/profiles.md).
+> [!IMPORTANT]
+> `/prompt-files-guide` has been called by the user to author compliant `.prompt.md` cards. The state above applies for this run.
 
-## Prompt file examples
+### Context & Activation
 
-The following examples demonstrate how to use prompt files. For more community-contributed examples, see the [Awesome Copilot repository](https://github.com/github/awesome-copilot/tree/main).
+* **Scope:** Create or rewrite files under `memory-bank/prompts/` only. Do not touch `.github/prompts/`.
+* **State:** Enforce our prompt-card contract. No H1. First header is the Slash Command H2. Use only allowed frontmatter.
+* **Inputs:** `${input:stem}` (required), `${selection}` (optional), `${file}` (optional), `${input:label}` (optional).
+* **Safety:** Never add `mode`, `model`, or `tools` frontmatter if they are absent. If present in an existing card, preserve them unchanged. No external links; use relative links to our instructions.
 
-<details>
-<summary>Example: generate a React form component</summary>
+### Goal
+
+Produce a single, valid `.prompt.md` card that runs in VS Code Chat and conforms to our formatting,
+storage, and linking rules without manual post-edits.
+
+### Output format
+
+Return one complete Markdown file:
+
+1. YAML frontmatter with only `description` unless optional keys already exist in the source.
+2. Path marker comment `<!-- memory-bank/prompts/<stem>.prompt.md -->`.
+3. `## Slash Command: /<stem> - <label>` then the IMPORTANT block exactly as below.
+4. Sections: **Context & Activation**, **Goal**, **Output format**, **Inputs**, **Steps / Rules**, **Examples**, **Edge cases / Stop criteria**.
+
+### Inputs
+
+* `${selection}`: current editor selection, if any.
+* `${file}`: current file path, if useful.
+* `${input:stem}`: canonical slash name, e.g. `create-react-form`.
+* `${input:label}`: short purpose label.
+
+### Steps / Rules
+
+* Store at `memory-bank/prompts/<stem>.prompt.md`.
+* Frontmatter:
+
+  * Required: `description`.
+  * Optional: `mode`, `model`, `tools` — never add if missing; never edit or remove if present.
+  * No other keys.
+* Spacing:
+
+  * Frontmatter fenced with `---`.
+  * Exactly one blank line after `---`.
+  * Then the path marker comment on its own line.
+  * Then exactly one blank line before the body.
+* Headings:
+
+  * No H1. First header is `## Slash Command: /<stem> - <label>`.
+  * All other headers are `###` or lower. No level skips.
+  * Lines ≤120 characters.
+* Links and refs:
+
+  * Use only relative links. Prefer referencing our rules:
+
+    * `[Prompt Files Factory](../instructions/layer-3c-prompt-files-factory.instructions.md)`
+    * `[Custom Instructions Factory](../instructions/layer-3a-custom-instructions-factory.instructions.md)`
+    * `[Chatmodes Factory](../instructions/layer-3b-chatmodes-factory.instructions.md)`
+* Variables:
+
+  * Support `${selection}`, `${file}`, `${input:*}` where useful.
+* Content:
+
+  * Define a clear Goal and Output format for the task the card performs.
+  * Provide at least one worked example.
+* Storage:
+
+  * Never write to `.github/prompts/` or profile locations.
+
+### Examples
+
+**Input:** `${input:stem}=create-react-form`, `${input:label}=Scaffold a React form`
+**Expected Output (minimal card):**
 
 ```markdown
 ---
-mode: 'agent'
-model: GPT-4o
-tools: ['githubRepo', 'codebase']
-description: 'Generate a new React form component'
+description: Scaffold a typed React form component with react-hook-form and schema validation.
 ---
-Your goal is to generate a new React form component based on the templates in #githubRepo contoso/react-templates.
 
-Ask for the form name and fields if not provided.
+<!-- memory-bank/prompts/create-react-form.prompt.md -->
 
-Requirements for the form:
-* Use form design system components: [design-system/Form.md](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/design-system/Form.md)
-* Use `react-hook-form` for form state management:
-* Always define TypeScript types for your form data
-* Prefer *uncontrolled* components using register
-* Use `defaultValues` to prevent unnecessary rerenders
-* Use `yup` for validation:
-* Create reusable validation schemas in separate files
-* Use TypeScript types to ensure type safety
-* Customize UX-friendly validation rules
+## Slash Command: /create-react-form - Scaffold a React form
+This command enables “React Form Scaffolding Mode” to generate a typed form component quickly.
+
+> [!IMPORTANT]
+> `/create-react-form` has been called by the user to scaffold a React form. The state above applies for this run.
+
+### Context & Activation
+- **Scope:** Generate component files; read templates; no external links.
+- **State:** Use Next.js + TypeScript conventions if detected; otherwise plain React + TS.
+
+### Goal
+Create `src/components/${input:name}/${input:name}.tsx` and a matching schema and types.
+
+### Output format
+- Diff or file contents for new files.
+- A checklist of follow-up steps.
+
+### Inputs
+- `${input:name}` (required), `${selection}` (optional)
+
+### Steps / Rules
+- Use `react-hook-form`. Define types for form data.
+- Prefer uncontrolled inputs with `register`. Provide `defaultValues`.
+- Create a Zod schema in `src/components/${input:name}/schema.ts`.
+- Export `Form${input:name}` component and `Form${input:name}Schema`.
+
+### Examples
+**Input:** `/create-react-form: name=UserProfile`
+**Expected:** Files + a TODO checklist.
+### Edge cases / Stop criteria
+- If project has no React, return a short plan instead of files and stop.
 ```
 
-</details>
+### Edge cases / Stop criteria
 
-<details>
-<summary>Example: perform a security review of a REST API</summary>
-
-```markdown
----
-mode: 'ask'
-model: Claude Sonnet 4
-description: 'Perform a REST API security review'
----
-Perform a REST API security review and provide a TODO list of security issues to address.
-
-* Ensure all endpoints are protected by authentication and authorization
-* Validate all user inputs and sanitize data
-* Implement rate limiting and throttling
-* Implement logging and monitoring for security events
-
-Return the TODO list in a Markdown format, grouped by priority and issue type.
-```
-
-</details>
-
-## Prompt file format
-
-Prompt files are Markdown files and use the `.prompt.md` extension and have this structure:
-
-* **Header** (optional): YAML frontmatter
-    * `description`: Short description of the prompt
-    * `mode`: Chat mode used for running the prompt: `ask`, `edit`, or `agent` (default).
-    * `model`: Language model used when running the prompt. If not specified, the currently selected model in model picker is used.
-    * `tools`: Array of tool (set) names that can be used. Select **Configure Tools** to select the tools from the list of available tools in your workspace. If a given tool (set) is not available when running the prompt, it is ignored.
-
-* **Body**: Prompt instructions in Markdown format
-
-    Reference other workspace files, prompt files, or instruction files by using Markdown links. Use relative paths to reference these files, and ensure that the paths are correct based on the location of the prompt file.
-
-    Within a prompt file, you can reference variables by using the `${variableName}` syntax. You can reference the following variables:
-
-    * Workspace variables - `${workspaceFolder}`, `${workspaceFolderBasename}`
-    * Selection variables - `${selection}`, `${selectedText}`
-    * File context variables - `${file}`, `${fileBasename}`, `${fileDirname}`, `${fileBasenameNoExtension}`
-    * Input variables - `${input:variableName}`, `${input:variableName:placeholder}` (pass values to the prompt from the chat input field)
-
-## Create a prompt file
-
-When you create a prompt file, choose whether to store it in your workspace or user profile. Workspace prompt files apply only to that workspace, while user prompt files are available across multiple workspaces.
-
-To create a prompt file:
-
-1. Enable the `setting(chat.promptFiles)` setting.
-
-1. In the Chat view, select **Configure Chat** > **Prompt Files**, and then select **New prompt file**.
-
-    ![Screenshot showing the Chat view, and Configure Chat menu, highlighting the Configure Chat button.](../images/customization/configure-chat-instructions.png)
-
-    Alternatively, use the **Chat: New Prompt File** command from the Command Palette (`kb(workbench.action.showCommands)`).
-
-1. Choose the location where the prompt file should be created.
-
-    * **Workspace**: By default, workspace prompt files are stored in the `.github/prompts` folder of your workspace. Add more prompt folders for your workspace with the `setting(chat.promptFilesLocations)` setting.
-
-    * **User profile**: User prompt files are stored in the [current profile folder](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/configure/profiles.md). You can sync your user prompt files across multiple devices by using [Settings Sync](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/configure/settings-sync.md).
-
-1. Enter a name for your prompt file.
-
-1. Author the chat prompt by using Markdown formatting.
-
-    Within a prompt file, reference additional workspace files as Markdown links (`[index]\(../index.ts)`).
-
-    You can also reference other `.prompt.md` files to create a hierarchy of prompts. You can also reference [instructions files](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/customization/custom-instructions.md) in the same way.
-
-To modify an existing prompt file, in the Chat view, select **Configure Chat** > **Prompt Files**, and then select a prompt file from the list. Alternatively, use the **Chat: Configure Prompt Files** command from the Command Palette (`kb(workbench.action.showCommands)`) and select the prompt file from the Quick Pick.
-
-## Use a prompt file in chat
-
-You have multiple options to run a prompt file:
-
-* In the Chat view, type `/` followed by the prompt file name in the chat input field.
-
-    This option enables you to pass additional information in the chat input field. For example, `/create-react-form` or `/create-react-form: formName=MyForm`.
-
-* Run the **Chat: Run Prompt** command from the Command Palette (`kb(workbench.action.showCommands)`) and select a prompt file from the Quick Pick.
-
-* Open the prompt file in the editor, and press the play button in the editor title area. You can choose to run the prompt in the current chat session or open a new chat session.
-
-    This option is useful for quickly testing and iterating on your prompt files.
-
-## Sync user prompt files across devices
-
-VS Code can sync your user prompt files across multiple devices by using [Settings Sync](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/configure/settings-sync.md).
-
-To sync your user prompt files, enable Settings Sync for prompt and instruction files:
-
-1. Make sure you have [Settings Sync](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/configure/settings-sync.md) enabled.
-
-1. Run **Settings Sync: Configure** from the Command Palette (`kb(workbench.action.showCommands)`).
-
-1. Select **Prompts and Instructions** from the list of settings to sync.
-
-## Tips for defining prompt files
-
-* Clearly describe what the prompt should accomplish and what output format is expected.
-
-* Provide examples of the expected input and output to guide the AI's responses.
-
-* Use Markdown links to reference custom instructions rather than duplicating guidelines in each prompt.
-
-* Take advantage of built-in variables like `${selection}` and input variables to make prompts more flexible.
-
-* Use the editor play button to test your prompts and refine them based on the results.
-
-## Related resources
-* [Customize AI responses overview](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/customization/overview.md)
-* [Create custom instructions](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/customization/custom-instructions.md)
-* [Create custom chat modes](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/customization/custom-chat-modes.md)
-* [Get started with chat in VS Code](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/chat/copilot-chat.md)
-* [Configure tools in chat](https://raw.githubusercontent.com/microsoft/vscode-docs/refs/heads/main/docs/copilot/chat/chat-agent-mode.md#agent-mode-tools)
-* [Community contributed instructions, prompts, and chat modes](https://github.com/github/awesome-copilot)
+* If an existing card includes `mode`, `model`, or `tools`, keep them exactly as-is.
+* If the stem is missing or invalid, stop and emit a one-line error.
+* If you cannot meet all rules, return the largest valid partial that compiles to Markdown and stop.
